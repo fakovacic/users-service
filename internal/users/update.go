@@ -26,16 +26,31 @@ func (s *service) Update(ctx context.Context, id string, m *User, fields []strin
 		}
 	}
 
-	_, err := s.store.Get(ctx, id)
+	model, err := s.store.Get(ctx, id)
 	if err != nil {
 		return nil, errors.Wrapf(err, "get user")
 	}
 
-	fields = append(fields, UserField.UpdatedAt)
+	for i := range fields {
+		switch fields[i] {
+		case UserField.FirstName:
+			model.FirstName = m.FirstName
+		case UserField.LastName:
+			model.LastName = m.LastName
+		case UserField.Nickname:
+			model.Nickname = m.Nickname
+		case UserField.Password:
+			model.Password = m.Password
+		case UserField.Email:
+			model.Email = m.Email
+		case UserField.Country:
+			model.Country = m.Country
+		}
+	}
 
-	m.UpdatedAt = s.timeFunc()
+	model.UpdatedAt = s.timeFunc()
 
-	model, err := s.store.Update(ctx, id, m, fields)
+	err = s.store.Update(ctx, id, model)
 	if err != nil {
 		return nil, errors.Wrapf(err, "update user")
 	}

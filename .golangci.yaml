@@ -19,6 +19,7 @@ linters:
     - interfacer
     - scopelint
     - maligned
+    - cyclop
 linters-settings:
   govet:
     check-shadowing: true

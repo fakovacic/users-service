@@ -19,7 +19,7 @@ var _ users.Store = &StoreMock{}
 //
 // 		// make and configure a mocked users.Store
 // 		mockedStore := &StoreMock{
-// 			CreateFunc: func(contextMoqParam context.Context, user *users.User) (*users.User, error) {
+// 			CreateFunc: func(contextMoqParam context.Context, user *users.User) error {
 // 				panic("mock out the Create method")
 // 			},
 // 			DeleteFunc: func(contextMoqParam context.Context, s string) error {
@@ -31,7 +31,7 @@ var _ users.Store = &StoreMock{}
 // 			ListFunc: func(contextMoqParam context.Context, meta *users.Meta) (int64, []*users.User, error) {
 // 				panic("mock out the List method")
 // 			},
-// 			UpdateFunc: func(contextMoqParam context.Context, s string, user *users.User, strings []string) (*users.User, error) {
+// 			UpdateFunc: func(contextMoqParam context.Context, s string, user *users.User) error {
 // 				panic("mock out the Update method")
 // 			},
 // 		}
@@ -42,7 +42,7 @@ var _ users.Store = &StoreMock{}
 // 	}
 type StoreMock struct {
 	// CreateFunc mocks the Create method.
-	CreateFunc func(contextMoqParam context.Context, user *users.User) (*users.User, error)
+	CreateFunc func(contextMoqParam context.Context, user *users.User) error
 
 	// DeleteFunc mocks the Delete method.
 	DeleteFunc func(contextMoqParam context.Context, s string) error
@@ -54,7 +54,7 @@ type StoreMock struct {
 	ListFunc func(contextMoqParam context.Context, meta *users.Meta) (int64, []*users.User, error)
 
 	// UpdateFunc mocks the Update method.
-	UpdateFunc func(contextMoqParam context.Context, s string, user *users.User, strings []string) (*users.User, error)
+	UpdateFunc func(contextMoqParam context.Context, s string, user *users.User) error
 
 	// calls tracks calls to the methods.
 	calls struct {
@@ -94,8 +94,6 @@ type StoreMock struct {
 			S string
 			// User is the user argument value.
 			User *users.User
-			// Strings is the strings argument value.
-			Strings []string
 		}
 	}
 	lockCreate sync.RWMutex
@@ -106,7 +104,7 @@ type StoreMock struct {
 }
 
 // Create calls CreateFunc.
-func (mock *StoreMock) Create(contextMoqParam context.Context, user *users.User) (*users.User, error) {
+func (mock *StoreMock) Create(contextMoqParam context.Context, user *users.User) error {
 	if mock.CreateFunc == nil {
 		panic("StoreMock.CreateFunc: method is nil but Store.Create was just called")
 	}
@@ -246,7 +244,7 @@ func (mock *StoreMock) ListCalls() []struct {
 }
 
 // Update calls UpdateFunc.
-func (mock *StoreMock) Update(contextMoqParam context.Context, s string, user *users.User, strings []string) (*users.User, error) {
+func (mock *StoreMock) Update(contextMoqParam context.Context, s string, user *users.User) error {
 	if mock.UpdateFunc == nil {
 		panic("StoreMock.UpdateFunc: method is nil but Store.Update was just called")
 	}
@@ -254,17 +252,15 @@ func (mock *StoreMock) Update(contextMoqParam context.Context, s string, user *u
 		ContextMoqParam context.Context
 		S               string
 		User            *users.User
-		Strings         []string
 	}{
 		ContextMoqParam: contextMoqParam,
 		S:               s,
 		User:            user,
-		Strings:         strings,
 	}
 	mock.lockUpdate.Lock()
 	mock.calls.Update = append(mock.calls.Update, callInfo)
 	mock.lockUpdate.Unlock()
-	return mock.UpdateFunc(contextMoqParam, s, user, strings)
+	return mock.UpdateFunc(contextMoqParam, s, user)
 }
 
 // UpdateCalls gets all the calls that were made to Update.
@@ -274,13 +270,11 @@ func (mock *StoreMock) UpdateCalls() []struct {
 	ContextMoqParam context.Context
 	S               string
 	User            *users.User
-	Strings         []string
 } {
 	var calls []struct {
 		ContextMoqParam context.Context
 		S               string
 		User            *users.User
-		Strings         []string
 	}
 	mock.lockUpdate.RLock()
 	calls = mock.calls.Update

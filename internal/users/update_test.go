@@ -22,11 +22,9 @@ func TestUpdate(t *testing.T) {
 		userGetResult *users.User
 		userGetError  error
 
-		userUpdateInputID     string
-		userUpdateInputModel  *users.User
-		userUpdateInputFields []string
-		userUpdateResult      *users.User
-		userUpdateError       error
+		userUpdateInputID    string
+		userUpdateInputModel *users.User
+		userUpdateError      error
 
 		expectedError  string
 		expectedResult *users.User
@@ -46,20 +44,14 @@ func TestUpdate(t *testing.T) {
 			},
 			userUpdateInputID: "mock-id",
 			userUpdateInputModel: &users.User{
+				ID:        "mock-id",
 				Email:     "mock-email",
 				UpdatedAt: GenTime(),
 			},
-			userUpdateInputFields: []string{
-				"email",
-				"updated_at",
-			},
-			userUpdateResult: &users.User{
-				ID:    "mock-id",
-				Email: "mock-email",
-			},
 			expectedResult: &users.User{
-				ID:    "mock-id",
-				Email: "mock-email",
+				ID:        "mock-id",
+				Email:     "mock-email",
+				UpdatedAt: GenTime(),
 			},
 		},
 		{
@@ -78,12 +70,9 @@ func TestUpdate(t *testing.T) {
 			},
 			userUpdateInputID: "mock-id",
 			userUpdateInputModel: &users.User{
+				ID:        "mock-id",
 				Email:     "mock-email",
 				UpdatedAt: GenTime(),
-			},
-			userUpdateInputFields: []string{
-				"email",
-				"updated_at",
 			},
 			userUpdateError: errors.Wrap("mock-error"),
 			expectedError:   "update user: mock-error",
@@ -138,12 +127,11 @@ func TestUpdate(t *testing.T) {
 
 					return tc.userGetResult, tc.userGetError
 				},
-				UpdateFunc: func(ctx context.Context, id string, model *users.User, fields []string) (*users.User, error) {
+				UpdateFunc: func(ctx context.Context, id string, model *users.User) error {
 					checkIs.Equal(id, tc.userUpdateInputID)
 					checkIs.Equal(model, tc.userUpdateInputModel)
-					checkIs.Equal(fields, tc.userUpdateInputFields)
 
-					return tc.userUpdateResult, tc.userUpdateError
+					return tc.userUpdateError
 				},
 			}
 

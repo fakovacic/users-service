@@ -16,9 +16,8 @@ func TestCreate(t *testing.T) {
 		model *users.User
 
 		// Store
-		userCreateInput  *users.User
-		userCreateResult *users.User
-		userCreateError  error
+		userCreateInput *users.User
+		userCreateError error
 
 		expectedError  string
 		expectedResult *users.User
@@ -29,12 +28,6 @@ func TestCreate(t *testing.T) {
 				Email: "mock-email",
 			},
 			userCreateInput: &users.User{
-				ID:        GenUUID().String(),
-				Email:     "mock-email",
-				CreatedAt: GenTime(),
-				UpdatedAt: GenTime(),
-			},
-			userCreateResult: &users.User{
 				ID:        GenUUID().String(),
 				Email:     "mock-email",
 				CreatedAt: GenTime(),
@@ -68,10 +61,10 @@ func TestCreate(t *testing.T) {
 			checkIs := is.New(t)
 
 			store := &mocks.StoreMock{
-				CreateFunc: func(ctx context.Context, model *users.User) (*users.User, error) {
+				CreateFunc: func(ctx context.Context, model *users.User) error {
 					checkIs.Equal(model, tc.userCreateInput)
 
-					return tc.userCreateResult, tc.userCreateError
+					return tc.userCreateError
 				},
 			}
 

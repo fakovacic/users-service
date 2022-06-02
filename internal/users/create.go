@@ -11,10 +11,10 @@ func (s *service) Create(ctx context.Context, m *User) (*User, error) {
 	m.CreatedAt = s.timeFunc()
 	m.UpdatedAt = s.timeFunc()
 
-	model, err := s.store.Create(ctx, m)
+	err := s.store.Create(ctx, m)
 	if err != nil {
 		return nil, errors.Wrapf(err, "create user")
 	}
 
-	return model, nil
+	return m, nil
 }
