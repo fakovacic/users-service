@@ -64,7 +64,7 @@ func (s *store) List(ctx context.Context, meta *users.Meta) (int64, []*users.Use
 	}
 
 	for rows.Next() {
-		var usr *users.User
+		usr := users.User{}
 
 		err = rows.Scan(
 			&usr.ID,
@@ -81,7 +81,7 @@ func (s *store) List(ctx context.Context, meta *users.Meta) (int64, []*users.Use
 			return 0, nil, errors.Wrapf(err, "scan user")
 		}
 
-		list = append(list, usr)
+		list = append(list, &usr)
 	}
 
 	return count, list, nil
