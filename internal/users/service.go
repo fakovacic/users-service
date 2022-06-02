@@ -7,6 +7,7 @@ import (
 	"github.com/google/uuid"
 )
 
+//go:generate moq -out ./mocks/service.go -pkg mocks  . Service
 type Service interface {
 	List(context.Context, *Meta) (*Meta, []*User, error)
 	Create(context.Context, *User) (*User, error)
