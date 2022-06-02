@@ -20,6 +20,7 @@ linters:
     - scopelint
     - maligned
     - cyclop
+    - tagliatelle
 linters-settings:
   govet:
     check-shadowing: true

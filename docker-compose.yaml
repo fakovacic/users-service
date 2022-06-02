@@ -1,0 +1,28 @@
+version: '3.5'
+
+services:
+  store:
+    image: postgres
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: user-pass
+      POSTGRES_DB: users
+    ports:
+      - "5432:5432"
+    networks:
+      - users
+  users:
+    image: users:1.0.0
+    environment:
+      DB_HOST: store
+      DB_USER: user
+      DB_PASSWORD: user-pass
+      DB_NAME: users
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+    networks:
+      - users
+networks:
+  users:
+    driver: bridge
