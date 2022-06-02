@@ -28,7 +28,7 @@ var _ users.Service = &ServiceMock{}
 // 			ListFunc: func(contextMoqParam context.Context, meta *users.Meta) (*users.Meta, []*users.User, error) {
 // 				panic("mock out the List method")
 // 			},
-// 			UpdateFunc: func(contextMoqParam context.Context, user *users.User, strings []string) (*users.User, error) {
+// 			UpdateFunc: func(contextMoqParam context.Context, s string, user *users.User, strings []string) (*users.User, error) {
 // 				panic("mock out the Update method")
 // 			},
 // 		}
@@ -48,7 +48,7 @@ type ServiceMock struct {
 	ListFunc func(contextMoqParam context.Context, meta *users.Meta) (*users.Meta, []*users.User, error)
 
 	// UpdateFunc mocks the Update method.
-	UpdateFunc func(contextMoqParam context.Context, user *users.User, strings []string) (*users.User, error)
+	UpdateFunc func(contextMoqParam context.Context, s string, user *users.User, strings []string) (*users.User, error)
 
 	// calls tracks calls to the methods.
 	calls struct {
@@ -77,6 +77,8 @@ type ServiceMock struct {
 		Update []struct {
 			// ContextMoqParam is the contextMoqParam argument value.
 			ContextMoqParam context.Context
+			// S is the s argument value.
+			S string
 			// User is the user argument value.
 			User *users.User
 			// Strings is the strings argument value.
@@ -195,23 +197,25 @@ func (mock *ServiceMock) ListCalls() []struct {
 }
 
 // Update calls UpdateFunc.
-func (mock *ServiceMock) Update(contextMoqParam context.Context, user *users.User, strings []string) (*users.User, error) {
+func (mock *ServiceMock) Update(contextMoqParam context.Context, s string, user *users.User, strings []string) (*users.User, error) {
 	if mock.UpdateFunc == nil {
 		panic("ServiceMock.UpdateFunc: method is nil but Service.Update was just called")
 	}
 	callInfo := struct {
 		ContextMoqParam context.Context
+		S               string
 		User            *users.User
 		Strings         []string
 	}{
 		ContextMoqParam: contextMoqParam,
+		S:               s,
 		User:            user,
 		Strings:         strings,
 	}
 	mock.lockUpdate.Lock()
 	mock.calls.Update = append(mock.calls.Update, callInfo)
 	mock.lockUpdate.Unlock()
-	return mock.UpdateFunc(contextMoqParam, user, strings)
+	return mock.UpdateFunc(contextMoqParam, s, user, strings)
 }
 
 // UpdateCalls gets all the calls that were made to Update.
@@ -219,11 +223,13 @@ func (mock *ServiceMock) Update(contextMoqParam context.Context, user *users.Use
 //     len(mockedService.UpdateCalls())
 func (mock *ServiceMock) UpdateCalls() []struct {
 	ContextMoqParam context.Context
+	S               string
 	User            *users.User
 	Strings         []string
 } {
 	var calls []struct {
 		ContextMoqParam context.Context
+		S               string
 		User            *users.User
 		Strings         []string
 	}

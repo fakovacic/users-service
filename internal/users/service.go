@@ -11,7 +11,7 @@ import (
 type Service interface {
 	List(context.Context, *Meta) (*Meta, []*User, error)
 	Create(context.Context, *User) (*User, error)
-	Update(context.Context, *User, []string) (*User, error)
+	Update(context.Context, string, *User, []string) (*User, error)
 	Delete(ctx context.Context, id string) error
 }
 

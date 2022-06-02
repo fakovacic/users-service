@@ -31,7 +31,7 @@ var _ users.Store = &StoreMock{}
 // 			ListFunc: func(contextMoqParam context.Context, meta *users.Meta) (int64, []*users.User, error) {
 // 				panic("mock out the List method")
 // 			},
-// 			UpdateFunc: func(contextMoqParam context.Context, user *users.User, strings []string) (*users.User, error) {
+// 			UpdateFunc: func(contextMoqParam context.Context, s string, user *users.User, strings []string) (*users.User, error) {
 // 				panic("mock out the Update method")
 // 			},
 // 		}
@@ -54,7 +54,7 @@ type StoreMock struct {
 	ListFunc func(contextMoqParam context.Context, meta *users.Meta) (int64, []*users.User, error)
 
 	// UpdateFunc mocks the Update method.
-	UpdateFunc func(contextMoqParam context.Context, user *users.User, strings []string) (*users.User, error)
+	UpdateFunc func(contextMoqParam context.Context, s string, user *users.User, strings []string) (*users.User, error)
 
 	// calls tracks calls to the methods.
 	calls struct {
@@ -90,6 +90,8 @@ type StoreMock struct {
 		Update []struct {
 			// ContextMoqParam is the contextMoqParam argument value.
 			ContextMoqParam context.Context
+			// S is the s argument value.
+			S string
 			// User is the user argument value.
 			User *users.User
 			// Strings is the strings argument value.
@@ -244,23 +246,25 @@ func (mock *StoreMock) ListCalls() []struct {
 }
 
 // Update calls UpdateFunc.
-func (mock *StoreMock) Update(contextMoqParam context.Context, user *users.User, strings []string) (*users.User, error) {
+func (mock *StoreMock) Update(contextMoqParam context.Context, s string, user *users.User, strings []string) (*users.User, error) {
 	if mock.UpdateFunc == nil {
 		panic("StoreMock.UpdateFunc: method is nil but Store.Update was just called")
 	}
 	callInfo := struct {
 		ContextMoqParam context.Context
+		S               string
 		User            *users.User
 		Strings         []string
 	}{
 		ContextMoqParam: contextMoqParam,
+		S:               s,
 		User:            user,
 		Strings:         strings,
 	}
 	mock.lockUpdate.Lock()
 	mock.calls.Update = append(mock.calls.Update, callInfo)
 	mock.lockUpdate.Unlock()
-	return mock.UpdateFunc(contextMoqParam, user, strings)
+	return mock.UpdateFunc(contextMoqParam, s, user, strings)
 }
 
 // UpdateCalls gets all the calls that were made to Update.
@@ -268,11 +272,13 @@ func (mock *StoreMock) Update(contextMoqParam context.Context, user *users.User,
 //     len(mockedStore.UpdateCalls())
 func (mock *StoreMock) UpdateCalls() []struct {
 	ContextMoqParam context.Context
+	S               string
 	User            *users.User
 	Strings         []string
 } {
 	var calls []struct {
 		ContextMoqParam context.Context
+		S               string
 		User            *users.User
 		Strings         []string
 	}
