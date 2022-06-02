@@ -17,7 +17,7 @@ type Meta struct {
 	Pages   int       `json:"pages"`
 	Count   int64     `json:"count"`
 	Limit   int       `json:"limit"`
-	Filters []Filters `json:"filters"`
+	Filters []Filters `json:"filters,omitempty"`
 }
 
 type Filters struct {
@@ -25,7 +25,7 @@ type Filters struct {
 	Values []string `json:"values"`
 }
 
-func NewMeta(sortField string) *Meta {
+func NewMeta() *Meta {
 	return &Meta{
 		Page:  1,
 		Limit: defaultLimit,
