@@ -12,6 +12,7 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/rs/zerolog v1.26.1
 	github.com/rubenv/sql-migrate v1.1.1
+	golang.org/x/crypto v0.0.0-20211215165025-cf75a172585e
 )
 
 require github.com/go-gorp/gorp/v3 v3.0.2 // indirect

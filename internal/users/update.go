@@ -26,6 +26,10 @@ func (s *service) Update(ctx context.Context, id string, m *User, fields []strin
 		}
 	}
 
+	if len(fields) == 0 {
+		return m, nil
+	}
+
 	model, err := s.store.Get(ctx, id)
 	if err != nil {
 		return nil, errors.Wrapf(err, "get user")
@@ -40,7 +44,7 @@ func (s *service) Update(ctx context.Context, id string, m *User, fields []strin
 		case UserField.Nickname:
 			model.Nickname = m.Nickname
 		case UserField.Password:
-			model.Password = m.Password
+			model.Password = HashAndSalt(m.Password)
 		case UserField.Email:
 			model.Email = m.Email
 		case UserField.Country:
